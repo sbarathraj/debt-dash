@@ -92,7 +92,7 @@ function Home() {
       .insert({ ...entry, status, user_id: u.user!.id })
       .select()
       .single();
-    if (error) toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     const next = [...loans, data as unknown as Loan];
     setLoans(next);
     scheduleSnapshot(next);
@@ -103,7 +103,7 @@ function Home() {
     const next = loans.map((l) => (l.id === id ? { ...l, ...patch, last_updated: new Date().toISOString() } : l));
     setLoans(next);
     const { error } = await supabase.from("loans").update({ ...patch, last_updated: new Date().toISOString() }).eq("id", id);
-    if (error) toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     scheduleSnapshot(next);
   };
 
@@ -111,7 +111,7 @@ function Home() {
     const next = loans.filter((l) => l.id !== id);
     setLoans(next);
     const { error } = await supabase.from("loans").delete().eq("id", id);
-    if (error) toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     scheduleSnapshot(next);
     toast.success("Loan deleted");
   };
@@ -121,7 +121,7 @@ function Home() {
     const userId = u.user!.id;
     // wipe & replace
     const { error: delErr } = await supabase.from("loans").delete().neq("id", "00000000-0000-0000-0000-000000000000");
-    if (delErr) toast.error(delErr.message);
+    if (delErr) { toast.error(delErr.message); return; }
     const rows = incoming.map((l) => ({
       user_id: userId,
       person_or_bank: l.person_or_bank,
@@ -133,7 +133,7 @@ function Home() {
     let inserted: Loan[] = [];
     if (rows.length > 0) {
       const { data, error } = await supabase.from("loans").insert(rows).select();
-      if (error) toast.error(error.message);
+      if (error) { toast.error(error.message); return; }
       inserted = (data ?? []) as unknown as Loan[];
     }
     setLoans(inserted);
@@ -143,7 +143,7 @@ function Home() {
 
   const handleSnapshotDelete = async (date: string) => {
     const { error } = await supabase.from("snapshots").delete().eq("snapshot_date", date);
-    if (error) toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setSnapshotDates((p) => p.filter((d) => d !== date));
     toast.success("Snapshot deleted");
   };
