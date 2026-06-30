@@ -73,7 +73,7 @@ export async function saveTodaySnapshot(loans: Loan[]) {
     snapshot_date: todayISO(),
     data: { loans, totals },
   };
-  const { error } = await supabase.from("snapshots").upsert(payload, {
+  const { error } = await supabase.from("snapshots").upsert(payload as any, {
     onConflict: "user_id,snapshot_date",
   });
   if (error) throw error;
