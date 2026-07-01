@@ -1,7 +1,7 @@
 {
   "hosting": {
     "site": "loantracker",
-    "public": ".output/public",
+    "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",
