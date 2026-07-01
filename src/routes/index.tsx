@@ -18,6 +18,9 @@ import { AddLoanDialog } from "@/components/loan/AddLoanDialog";
 import { SmartSuggestions } from "@/components/loan/SmartSuggestions";
 import { SnapshotHistory } from "@/components/loan/SnapshotHistory";
 import { InsightsDialog } from "@/components/loan/InsightsDialog";
+import { CopyYesterdayButton } from "@/components/loan/CopyYesterdayButton";
+import { CompareDatesDialog } from "@/components/loan/CompareDatesDialog";
+
 
 
 export const Route = createFileRoute("/")({
