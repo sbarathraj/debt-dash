@@ -121,9 +121,16 @@ function RootComponent() {
 
   // Register service worker for PWA installability
   useEffect(() => {
-    if ("serviceWorker" in navigator) {
+    if (import.meta.env.PROD && "serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js").catch(() => {
         // SW registration failed silently — app still works
+      });
+    } else if (!import.meta.env.PROD && "serviceWorker" in navigator) {
+      // In development, unregister any active service workers to prevent cached loops
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (const registration of registrations) {
+          registration.unregister();
+        }
       });
     }
   }, []);
