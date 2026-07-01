@@ -1,14 +1,25 @@
 {
   "name": "Loan & Debt Tracker",
-  "short_name": "Loans",
-  "description": "Track loans and debts with daily snapshots and smart payoff suggestions.",
+  "short_name": "DebtDash",
+  "description": "Track loans and debts with daily snapshots, smart payoff suggestions, and progress comparison.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#f8fafc",
   "theme_color": "#2563eb",
+  "categories": ["finance", "productivity"],
   "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Today's Tracker",
+      "url": "/",
+      "description": "Open today's loan tracker"
+    }
   ]
 }
