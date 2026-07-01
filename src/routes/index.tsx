@@ -146,6 +146,28 @@ function Home() {
     toast.success("Copied snapshot to Present Date");
   };
 
+  const handleMergeIntoPresent = async (incoming: Loan[]) => {
+    const { data: u } = await supabase.auth.getUser();
+    const userId = u.user!.id;
+    const rows = incoming.map((l) => ({
+      user_id: userId,
+      person_or_bank: l.person_or_bank,
+      loan_amount: Number(l.loan_amount) || 0,
+      debt_remaining: Number(l.debt_remaining) || 0,
+      status: l.status,
+      notes: l.notes,
+    }));
+    if (rows.length === 0) return;
+    const { data, error } = await supabase.from("loans").insert(rows).select();
+    if (error) { toast.error(error.message); return; }
+    const inserted = (data ?? []) as unknown as Loan[];
+    const next = [...loans, ...inserted];
+    setLoans(next);
+    scheduleSnapshot(next);
+    toast.success(`Merged ${inserted.length} ${inserted.length === 1 ? "entry" : "entries"}`);
+  };
+
+
   const handleSnapshotDelete = async (date: string) => {
     const { error } = await supabase.from("snapshots").delete().eq("snapshot_date", date);
     if (error) { toast.error(error.message); return; }
