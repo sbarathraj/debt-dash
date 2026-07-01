@@ -17,15 +17,10 @@ interface Props {
   liveLoans: Loan[];
   triggerLabel?: string;
   variant?: "default" | "outline";
-  autoYesterdayToday?: boolean;
 }
 
-function yesterdayISO() {
-  const d = new Date(); d.setDate(d.getDate() - 1);
-  return dateToISO(d);
-}
+export function CompareDatesDialog({ liveLoans, triggerLabel = "Compare Dates", variant = "outline" }: Props) {
 
-export function CompareDatesDialog({ liveLoans, triggerLabel = "Compare Dates", variant = "outline", autoYesterdayToday }: Props) {
   const [open, setOpen] = useState(false);
   const [dateA, setDateA] = useState<Date | undefined>(undefined);
   const [dateB, setDateB] = useState<Date | undefined>(undefined);
