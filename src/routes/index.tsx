@@ -18,6 +18,9 @@ import { AddLoanDialog } from "@/components/loan/AddLoanDialog";
 import { SmartSuggestions } from "@/components/loan/SmartSuggestions";
 import { SnapshotHistory } from "@/components/loan/SnapshotHistory";
 import { InsightsDialog } from "@/components/loan/InsightsDialog";
+import { CopyYesterdayButton } from "@/components/loan/CopyYesterdayButton";
+import { CompareDatesDialog } from "@/components/loan/CompareDatesDialog";
+
 
 
 export const Route = createFileRoute("/")({
@@ -143,6 +146,28 @@ function Home() {
     toast.success("Copied snapshot to Present Date");
   };
 
+  const handleMergeIntoPresent = async (incoming: Loan[]) => {
+    const { data: u } = await supabase.auth.getUser();
+    const userId = u.user!.id;
+    const rows = incoming.map((l) => ({
+      user_id: userId,
+      person_or_bank: l.person_or_bank,
+      loan_amount: Number(l.loan_amount) || 0,
+      debt_remaining: Number(l.debt_remaining) || 0,
+      status: l.status,
+      notes: l.notes,
+    }));
+    if (rows.length === 0) return;
+    const { data, error } = await supabase.from("loans").insert(rows).select();
+    if (error) { toast.error(error.message); return; }
+    const inserted = (data ?? []) as unknown as Loan[];
+    const next = [...loans, ...inserted];
+    setLoans(next);
+    scheduleSnapshot(next);
+    toast.success(`Merged ${inserted.length} ${inserted.length === 1 ? "entry" : "entries"}`);
+  };
+
+
   const handleSnapshotDelete = async (date: string) => {
     const { error } = await supabase.from("snapshots").delete().eq("snapshot_date", date);
     if (error) { toast.error(error.message); return; }
@@ -187,13 +212,15 @@ function Home() {
               <p className="text-xs text-muted-foreground">{userEmail}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <CompareDatesDialog liveLoans={loans} />
             <InsightsDialog loans={loans} snapshotDates={snapshotDates} />
             <SnapshotHistory dates={snapshotDates} onDelete={handleSnapshotDelete} />
             <Button variant="outline" size="sm" onClick={signOut} className="gap-1">
               <LogOut className="w-4 h-4" /> Sign out
             </Button>
           </div>
+
 
         </div>
       </header>
@@ -218,6 +245,12 @@ function Home() {
               </div>
               <div className="flex items-center gap-2 flex-wrap">
                 <AddLoanDialog onAdd={handleAdd} />
+                <CopyYesterdayButton
+                  currentLoans={loans}
+                  onReplace={handleCopyToPresent}
+                  onMerge={handleMergeIntoPresent}
+                />
+                <CompareDatesDialog liveLoans={loans} triggerLabel="Compare with Yesterday" />
                 <Button size="sm" variant="outline" onClick={copyPresentToClipboard} className="gap-1">
                   <ClipboardCopy className="w-4 h-4" /> Copy
                 </Button>
@@ -225,6 +258,7 @@ function Home() {
                   Totals: {formatINR(totals.total_loan)} loaned · {formatINR(totals.total_debt)} due
                 </span>
               </div>
+
             </CardHeader>
             <CardContent className="flex-1">
               <PresentTable loans={loans} onUpdate={handleUpdate} onDelete={handleDelete} />
