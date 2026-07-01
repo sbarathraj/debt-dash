@@ -1,5 +1,5 @@
 // Loan & Debt Tracker - Service Worker (Cache-first for static assets, network-first for API)
-const CACHE_NAME = "debt-dash-v1";
+const CACHE_NAME = "debt-dash-v2";
 const STATIC_ASSETS = [
   "/",
   "/manifest.webmanifest",
