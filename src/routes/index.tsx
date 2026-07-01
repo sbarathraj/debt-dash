@@ -17,6 +17,8 @@ import { BeforePanel } from "@/components/loan/BeforePanel";
 import { AddLoanDialog } from "@/components/loan/AddLoanDialog";
 import { SmartSuggestions } from "@/components/loan/SmartSuggestions";
 import { SnapshotHistory } from "@/components/loan/SnapshotHistory";
+import { InsightsDialog } from "@/components/loan/InsightsDialog";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -186,11 +188,13 @@ function Home() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <InsightsDialog loans={loans} snapshotDates={snapshotDates} />
             <SnapshotHistory dates={snapshotDates} onDelete={handleSnapshotDelete} />
             <Button variant="outline" size="sm" onClick={signOut} className="gap-1">
               <LogOut className="w-4 h-4" /> Sign out
             </Button>
           </div>
+
         </div>
       </header>
 
