@@ -245,6 +245,12 @@ function Home() {
               </div>
               <div className="flex items-center gap-2 flex-wrap">
                 <AddLoanDialog onAdd={handleAdd} />
+                <CopyYesterdayButton
+                  currentLoans={loans}
+                  onReplace={handleCopyToPresent}
+                  onMerge={handleMergeIntoPresent}
+                />
+                <CompareDatesDialog liveLoans={loans} triggerLabel="Compare with Yesterday" />
                 <Button size="sm" variant="outline" onClick={copyPresentToClipboard} className="gap-1">
                   <ClipboardCopy className="w-4 h-4" /> Copy
                 </Button>
@@ -252,6 +258,7 @@ function Home() {
                   Totals: {formatINR(totals.total_loan)} loaned · {formatINR(totals.total_debt)} due
                 </span>
               </div>
+
             </CardHeader>
             <CardContent className="flex-1">
               <PresentTable loans={loans} onUpdate={handleUpdate} onDelete={handleDelete} />
